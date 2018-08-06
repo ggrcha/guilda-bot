@@ -1,0 +1,17 @@
+version: '3.1'
+services: 
+ web:
+   depends_on:
+     - mqtt
+     - cordenador
+   image: web-adapter-bot:staging
+ cordenador:
+   depends_on:
+     - mqtt
+   image: cordenador-sala
+ mqtt:
+   container_name: mqtt
+   image: toke/mosquitto:staging
+   ports:
+     - 1883:1883
+   restart: always

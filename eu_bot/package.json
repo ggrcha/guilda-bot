@@ -1,0 +1,16 @@
+{
+  "name": "eu_bot",
+  "version": "1.0.0",
+  "description": "bot gente boa da guilda",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bot.js"
+  },
+  "author": "guilherme g. rocha",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^3.1.1",
+    "mqtt": "^2.18.3"
+  }
+}

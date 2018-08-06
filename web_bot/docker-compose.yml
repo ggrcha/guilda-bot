@@ -1,0 +1,53 @@
+version: '3.1'
+services: 
+ web:
+   container_name: web
+   depends_on:
+     - mqtt
+     - cordenador
+   image: web:latest
+   restart: always
+   environment:
+     - MQTT_BROKER=mqtt://mqtt
+     - MQTT_PORT=1883
+ cordenador:
+   depends_on:
+     - mqtt
+   image: cordenador-sala:latest
+   environment:
+     - MQTT_BROKER=mqtt://mqtt
+     - MQTT_PORT=1883
+ mqtt:
+   container_name: mqtt
+   image: toke/mosquitto:staging
+   ports:
+     - 1883:1883
+   restart: always
+ nginx_proxy:
+   depends_on: 
+     - web
+   container_name: nginx_proxy
+   image: nginx_proxy:latest
+   ports:
+     - 443:443
+   restart: always
+ mongodb:
+   container_name: mongodb
+   image: tutum/mongodb:latest
+   restart: always
+   environment:
+    - AUTH=no
+    # - MONGODB_PASS=teste
+   ports:
+    - 27017:27017
+    - 28017:28017
+ eu_bot:
+   depends_on:
+    - mongodb
+   container_name: eu_bot
+   image: eubot:latest
+   restart: always
+   environment:
+    - MQTT_BROKER=mqtt://mqtt
+    - MQTT_PORT=1883
+    - MONGODB_URL=mongodb://mongodb/

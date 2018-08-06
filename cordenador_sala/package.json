@@ -1,0 +1,12 @@
+{
+  "name": "cordenador",
+  "version": "1.0.0",
+  "description": "cordenador chat bot guilda",
+  "main": "coordenador.js",
+  "scripts": {
+    "start": "node coordenador.js"
+  },
+  "dependencies": {
+    "mqtt": "^2.18.0"
+  }
+}

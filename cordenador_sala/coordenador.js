@@ -1,9 +1,11 @@
+var provedorMongo=require('./mongo-provider/dbProvider');
 var provedorMqtt=require('./mqtt-provider/provedorMqtt'); 
 
 var topicoIn="/falecom/cordenador";
 var topicoOut="/falecom/bot"
 
-cliente=provedorMqtt.conectar();
+var cliente=provedorMqtt.conectar();
+var mongo=provedorMongo.getDb();
 
 cliente.on('connect',function(connack){
 	console.log(connack);
@@ -13,6 +15,12 @@ cliente.on('connect',function(connack){
 });
 
 cliente.on('message',function(topic,message){
-	console.log("mensagem recebida: " + message );
-	cliente.publish(message,"ID gerado pelo bot");
+	console.log("coordenador: mensagem recebida: " + message );
+	messageObj=JSON.parse(message);
+	mongo.collection('usuarios').insertOne(messageObj, function(err,resultado){
+		(err == null) ? console.log('salvo') : console.log(err)
+	});
+	cliente.publish("/falecom/" + messageObj.id,"bot de teste");
+	console.log("publicada mensagem para: /falecom/" + messageObj.id);
 });	
+

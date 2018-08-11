@@ -12,6 +12,8 @@ COPY . /src/app
 
 COPY ./mqtt-provider /src/mqtt-provider
 
+COPY ./mongo-provider /src/mongo-provider
+
 # EXPOSE 8080
 
 CMD [ "npm", "start" ]

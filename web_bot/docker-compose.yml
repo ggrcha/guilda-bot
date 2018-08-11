@@ -13,15 +13,19 @@ services:
  cordenador:
    depends_on:
      - mqtt
+     - mongodb
    image: cordenador-sala:latest
    environment:
      - MQTT_BROKER=mqtt://mqtt
      - MQTT_PORT=1883
+     - MONGODB_URL=mongodb://mongodb:27017/guilda
+     - MONGODB_DB=guilda
  mqtt:
    container_name: mqtt
-   image: toke/mosquitto:staging
+   image: sourceperl/mosquitto:latest
    ports:
      - 1883:1883
+     - 9001:9001
    restart: always
  nginx_proxy:
    depends_on: 
@@ -35,6 +39,8 @@ services:
    container_name: mongodb
    image: tutum/mongodb:latest
    restart: always
+   volumes:
+    - /home/ggrcha/projetos/dados/guilda_bot:/data/db
    environment:
     - AUTH=no
     # - MONGODB_PASS=teste
@@ -50,4 +56,4 @@ services:
    environment:
     - MQTT_BROKER=mqtt://mqtt
     - MQTT_PORT=1883
-    - MONGODB_URL=mongodb://mongodb/
+    - MONGODB_URL=mongodb://mongodb:27017/guilda

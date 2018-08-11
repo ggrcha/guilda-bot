@@ -1,0 +1,65 @@
+extends layout
+
+block content
+  h1= title
+  p Converse com a guilda! :)
+  div
+  form(action='/guilda',method='post')
+      input(type='text',name='mensagem')
+      input(id="userID" name="userID" type="hidden" value="")
+      input(type='submit',value='Enviar',data-transition='fade')
+  
+  textarea(rows="20" name="resposta")=resposta
+
+  script.
+
+        var generateUUID = (function() {
+          function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+          }
+          return function() {
+                return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+          };
+        })();
+
+        var self=generateUUID();
+        localStorage.setItem("id",self);
+        var s = document.getElementById("userID");
+        s.value = localStorage.getItem("id");
+
+        var reconnectTimeout = 2000;
+        //- var host="192.168.0.10";
+        var host="localhost";
+        var port= 9001;
+        console.log("connecting to "+ host +" "+ port);
+      //-   mqtt = new Paho.MQTT.Client(host,port,"guilda");
+        var mqtt = new Paho.Client(host,Number(port),"/" ,"guilda");
+        
+        var options = {
+        timeout: 3,
+        onSuccess: onConnect,
+        useSSL: false
+        }
+
+        mqtt.onMessageArrived = onMessageArrived;
+        mqtt.connect(options);
+
+        function onConnect() {
+              console.log("Connected ");
+              mqtt.subscribe("/falecom/" + localStorage.getItem("id"));
+              console.log("subscrito em /falecom/" + localStorage.getItem("id"));
+              var jself = {id:self};
+              try{
+                message = new Paho.Message(JSON.stringify(jself));
+              } catch(err){
+                  console.log(err);
+              }
+              message.destinationName = "/falecom/cordenador";
+              mqtt.send(message);
+        }
+
+        function onMessageArrived(message) {
+             console.log(message.payloadString);
+        }
+
+

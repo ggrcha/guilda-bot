@@ -7,6 +7,7 @@
     "start": "node coordenador.js"
   },
   "dependencies": {
+    "mongoose": "^5.2.7",
     "mqtt": "^2.18.0"
   }
 }
